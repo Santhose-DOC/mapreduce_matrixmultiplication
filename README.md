@@ -1,6 +1,6 @@
 # Exp 01 Matrix Multiplication using MapReduce
 
-**Date:**
+**Date:** 25/10/2026
 
 ## AIM:
 To implement Matrix Vector Multiplication using the MapReduce programming model.
@@ -32,12 +32,82 @@ Verify and display the resulting product matrix.
 
 ## PROGRAM:
 
-*(Paste the code for Matrix Vector Multiplication using MapReduce here.)*
+```python
 
+# Matrix Multiplication using MapReduce
+
+A = [
+    [1, 2],
+    [4, 5],
+    [7, 8]
+]
+
+B = [
+    [1, 2, 3],
+    [4, 5, 6]
+]
+
+# Mapper phase
+def mapper(A, B):
+    intermediate = []
+
+    for i in range(len(A)):
+        for j in range(len(B[0])):
+            for k in range(len(B)):
+                intermediate.append(
+                    ((i, j), A[i][k] * B[k][j])
+                )
+
+    return intermediate
+
+
+# Shuffle and Sort phase
+def shuffle_sort(intermediate):
+    grouped = {}
+
+    for key, product in intermediate:
+        if key not in grouped:
+            grouped[key] = []
+        grouped[key].append(product)
+
+    return grouped
+
+
+# Reducer phase
+def reducer(grouped):
+    result = {}
+
+    for key, products in grouped.items():
+        result[key] = sum(products)
+
+    return result
+
+
+# Execute MapReduce
+mapped_data = mapper(A, B)
+
+print("Mapper Output:")
+for item in mapped_data:
+    print(item)
+
+grouped_data = shuffle_sort(mapped_data)
+
+print("\nShuffle and Sort Output:")
+for key, products in grouped_data.items():
+    print(f"{key}: {products}")
+
+final_result = reducer(grouped_data)
+
+print("\nResultant Matrix:")
+for i in range(len(A)):
+    for j in range(len(B[0])):
+        print(final_result[(i, j)], end=" ")
+    print()
+
+```
 ## OUTPUT:
 
-*(Paste the execution output showing the resultant matrix here.)*
-
+![alt text](image.png)
 ## RESULT:
 
 The Matrix Multiplication using the MapReduce programming model was implemented successfully, and the resultant matrix was computed correctly.
